@@ -1,0 +1,15 @@
+Endpoint returning list of published posts
+---
+tags: 
+    - Posts
+produces:
+- "application/json"
+responses:
+    200:
+        description: "successful request"
+        schema:
+            type: "array"
+            items:
+                $ref: "#/definitions/Post"
+
+        

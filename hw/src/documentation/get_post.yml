@@ -1,0 +1,21 @@
+Endpoint returning a requested post 
+---
+tags: 
+    - Posts
+parameters:
+  - in: "header"
+    name: "post_id"
+    description: "ID of post to return"
+    required: true
+produces:
+- "application/json"
+responses:
+    200:
+        description: "successful request"
+        schema:
+            $ref: "#/definitions/Post"
+    404: 
+        description: "requested post cannot be found"
+    400:
+        description: "invalid id format"
+

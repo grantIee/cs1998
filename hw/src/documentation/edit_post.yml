@@ -1,0 +1,30 @@
+Endpoint editing requested post
+---
+tags: 
+    - Posts
+produces:
+- "application/json"
+parameters:
+  - name: "post_id"
+    in: "header"
+    description: "ID of post requested to be edited"
+    required: true
+    type: "integer"
+  - name: "Post"
+    in: "body"
+    description: "Edited Post"
+    required: true
+    schema:
+        $ref: "#/definitions/Post"
+responses:
+    200:
+        description: "successful request"
+        schema:
+            ref: "#/definitions/Post"
+    404:
+        description: "requested post cannot be found"
+    400:
+        description: "invalid post_id format"
+    412:
+        description: "invalid body format"
+

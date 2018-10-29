@@ -1,0 +1,61 @@
+Endpoint creating a new comment for a requested post
+---
+tags: 
+    - Comments
+operationId: create_comment
+produces:
+- "application/json"
+consumes: 
+- "application/json"
+parameters:
+  - in: "body" 
+    name: "Comment"
+    description: "Comment object that needs to be added to requested post"
+    required: true
+    schema:
+        $ref: "#/definitions/Comment"
+  - in: "header"
+    name: "post_id"
+    description: "Post ID of post that comment will attach to"
+    required: true
+definitions:
+    Post:
+        type: "object"
+        properties:
+            id: 
+                type: "integer" 
+            score: 
+                type: "integer" 
+            text: 
+                type: "string"
+            username: 
+                type: "string"
+        xml:
+            name: "Post"
+    Comment:
+        type: "object"
+        properties:
+            id:
+                type: "integer"
+            score:
+                type: "integer"
+            text: 
+                type: "string"
+            username:
+                type: "string"
+        xml:
+            name: "Comment"
+responses:
+    201:
+        description: "successful creation"
+        schema:
+            $ref: "#/definitions/Comment" 
+    404: 
+        description: "requested post_id not found"
+    400: 
+        description: "invalid post_id format"
+    412:
+        description: "invalid body format"
+                    
+
+

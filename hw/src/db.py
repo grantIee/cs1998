@@ -7,20 +7,20 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     score = db.Column(db.Integer, default = 0)
     text = db.Column(db.String, nullable = False)
-    username = db.Column(db.String, nullable= False)
+    username = db.Column(db.String, nullable = False)
     comments = db.relationship('Comment', cascade = 'delete')
 
-def __init__(self, **kwags):
-    self.text = kwags.get('text', '')
-    self.username = kwags.get('username', '')
-
-def serialize(self):
-    return {
-        'id': self.id,
-        'score': self.score,
-        'text': self.text,
-        'username': self.username
-    }
+    def __init__(self, **kwargs):
+        self.text = kwargs.get('text', '')
+        self.username = kwargs.get('username', '')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'score': self.score,
+            'text': self.text,
+            'username': self.username
+        }
 
 class Comment(db.Model):
     __tablename__ = 'comment'
@@ -28,12 +28,12 @@ class Comment(db.Model):
     score = db.Column(db.Integer, default = 0)
     text = db.Column(db.String, nullable = False)
     username = db.Column(db.String, nullable= False)
-    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable = False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable = False)
 
-    def __init__(self, **kwags):
-        self.text = kwags.get('text', '')
-        self.username = kwags.get('username', '')
-        self.task_id = kwags.get('task_id')
+    def __init__(self, **kwargs):
+        self.text = kwargs.get('text', '')
+        self.username = kwargs.get('username', '')
+        self.task_id = kwargs.get('task_id')
 
     def serialize(self):
         return {

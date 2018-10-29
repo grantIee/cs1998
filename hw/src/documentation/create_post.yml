@@ -1,0 +1,22 @@
+Endpoint creating a new post
+---
+tags: 
+    - Posts
+produces:
+- "application/json"
+parameters:
+  - in: "body"
+    name: "Post"
+    description: "Post created"
+    required: true
+    schema:
+        $ref: "#/definitions/Post"
+
+responses:
+    201:
+        description: "successful creation"
+        schema:
+            $ref: "#/definitions/Post"
+    412:
+        description: "invalid body format"
+

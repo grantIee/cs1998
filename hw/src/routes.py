@@ -1,32 +1,32 @@
+import json
 from flask import Flask, request
 from flasgger import Swagger
-import json
-from db import db, Comment, Post
+from db import db, Post, Comment
 
 db_filename = 'posts.db'
 app = Flask(__name__)
-app.config['SWAGGER'] = {
-    "title": "Cornell AppDev - CS1998: Reddit-like Website API",
-    "version": "0.0.1",
-    "description": "This is the API for Cornell AppDev Fall" + 
-    "2018 Course CS1998: Intro to Backend Development. This API" + 
-    "is for a reddit-like forum website." + 
-    "Some links for this API: [Course Github](https://github.com/appdev-courses)" +
-    "| [Course Website](https://github.com/appdev-courses)" + 
-    "| [Course Piazza](https://piazza.com/class/jmb59vq5rqv2c5)"
-}
-
-swagger = Swagger(app)
 
 # Configuration of SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % db_filename
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
+app.config['SWAGGER'] = {
+   "title": "Cornell AppDev - CS1998: Reddit-like Website API",
+   "version": "0.0.1",
+   "description": "This is the API for Cornell AppDev Fall 2018" +
+   "Course CS1998: Intro to Backend Development. This API is for" +
+   "a reddit-like forum website. Some links for this API:" +
+   "[Course Github](https://github.com/appdev-courses) |" +
+   "[Course Website](https://github.com/appdev-courses) |" +
+   "[Course Piazza](https://piazza.com/class/jmb59vq5rqv2c5)"
+}
 
 # Initiation of db
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
+swagger = Swagger(app)
 
 #### Code Begins Here #### 
 
@@ -36,7 +36,7 @@ def get_posts():
     file: ./documentation/get_posts.yml
     '''
     posts = Post.query.all()
-    res = {'success': True, 'data': [posts.serialize() for post in posts]}
+    res = {'success': True, 'data': [post.serialize() for post in posts]}
     return json.dumps(res), 200
 
 @app.route('/api/posts/', methods = ['POST'])
@@ -46,8 +46,8 @@ def create_post():
     '''
     
     request_body = json.loads(request.data)
-    #Code here checks for blank body requests / @beforerequests checks for None body requests
-    if not request_body['text'] == '' and not request_body['username'] == '':
+    # Code here checks for blank body requests / @beforerequests checks for None body requests
+    if not request_body.get('text') == '' and not request_body.get('username') == '':
         post = Post(
             text = request_body.get('text'),
             username = request_body.get('username')
@@ -55,7 +55,7 @@ def create_post():
         # Keep the two acts separate to reduce automatic commits to the server
         db.session.add(post)
         db.session.commit()
-        return json.dumps({'success': True, 'data': post}), 201
+        return json.dumps({'success': True, 'data': post.serialize()}), 201
     return json.dumps({'success': False, 'error': 'invalid body format'}), 412
 
 @app.route('/api/post/<int:post_id>/')
@@ -78,7 +78,7 @@ def update_post(post_id):
     post = Post.query.filter_by(id = post_id).first()
     if post is not None:
         request_body = json.loads(request.data)
-        if not request_body['text'] == '' and not request_body['username'] == '':
+        if not request_body.get('text') == '' and not request_body.get('username') == '':
             post.text = request_body.get('text', post.text)
             post.username = request_body.get('username', post.username)
             db.session.commit()
@@ -119,10 +119,10 @@ def create_comment(post_id):
     '''
 
     post = Post.query.filter_by(id = post_id).first()
-    if Db.get_post_by_id(post_id) is not None:
+    if post is not None:
         request_body = json.loads(request.data)
         # Code here checks for blank body requests / @beforerequests checks for None body requests
-        if not request_body['text'] == '' and not request_body['username'] == '':
+        if not request_body.get('text') == '' and not request_body.get('username') == '':
             comment = Comment(
                 text = request_body.get('text'),
                 username = request_body.get('username'),
@@ -132,8 +132,8 @@ def create_comment(post_id):
             db.session.add(comment)
             db.session.commit()
             return json.dumps({'success': True, 'data': comment.serialize()}), 201
-        return json.dumps({'success': False, 'error': 'Post not found!'}), 404
-    return json.dumps({'success': False, 'error': 'invalid body format'}), 412
+        return json.dumps({'success': False, 'error': 'invalid body format'}), 412
+    return json.dumps({'success': False, 'error': 'Post not found!'}), 404
 
 # Code that checks for post requests that submit a None body
 @app.before_request

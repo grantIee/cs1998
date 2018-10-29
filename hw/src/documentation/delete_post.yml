@@ -1,0 +1,24 @@
+Endpoint returns the data of the requested to be deleted
+---
+tags: 
+    - Posts
+operationId: delete_post
+produces:
+- "application/json"
+parameters:
+  - name: "post_id"
+    in: "header"
+    type: "integer"
+    required: true
+    description: "ID of post to delete"
+responses:
+    200: 
+        description: "successful request"
+        schema:
+            $ref: "#/definitions/Post"
+    404:
+        description: "request post_id not found"
+    400:
+        description: "invalid post_id format"
+
+            

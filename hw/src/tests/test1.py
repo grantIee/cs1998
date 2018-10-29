@@ -61,8 +61,6 @@ class TestRoutes(unittest.TestCase):
         assert comments[0]['text'] == 'First comment'
         assert comments[0]['username'] == 'Megan'
 
-        res = requests.delete(LOCAL_URL + '/api/post/' + str(post_id) + '/')
-
     def test_get_invalid_post(self):
         res = requests.get(LOCAL_URL + '/api/post/1000/')
         assert not res.json()['success']
@@ -82,7 +80,6 @@ class TestRoutes(unittest.TestCase):
 
     def test_post_invalid_comment(self):
         res = requests.post(LOCAL_URL + '/api/post/1000/comment/', data=json.dumps(BODY))
-        print(res.json()['success'])
         assert not res.json()['success']
 
     def test_post_id_increments(self):

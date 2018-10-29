@@ -1,0 +1,27 @@
+Endpoint returning all comments attached to requested post
+---
+tags: 
+    - Comments
+produces:
+- "application/json"
+parameters:
+  - in: "header"
+    name: "post_id"
+    type: "integer"
+    description: "ID of post containing requested comments" 
+    required: true
+
+responses:
+    200:
+        description: "successful request"
+        type: "array"
+        items:
+            $ref: "#/definitions/Comment"
+    404: 
+        description: "requested post_id not found"
+    400:
+        description: "invalid id format"
+
+
+
+                                                                                                                                                                                            
