@@ -1,0 +1,32 @@
+Endpoint returning the post that recieved a vote
+---
+tags: 
+    - Voting
+operationId: vote_on_post
+produces:
+- "application/json"
+consumes: 
+- "application/json"
+parameters:
+  - in: "body" 
+    name: "Vote"
+    description: "Boolean that corresponds to a down or upvote"
+    required: true
+    schema:
+        $ref: "#/definitions/Vote"
+  - in: "header"
+    name: "post_id"
+    description: "ID of post that the boolean applies to"
+    required: true
+
+responses:
+    200:
+        description: "successful request"
+        schema:
+            $ref: "#/definitions/vote"
+    404: 
+        description: "requested post_id not found"
+    400: 
+        description: "invalid comment_id format"
+    412:
+        description: "invalid body format"

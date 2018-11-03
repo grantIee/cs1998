@@ -35,6 +35,7 @@ def get_posts():
     '''
     file: ./documentation/get_posts.yml
     '''
+
     posts = Post.query.all()
     res = {'success': True, 'data': [post.serialize() for post in posts]}
     return json.dumps(res), 200
@@ -135,7 +136,49 @@ def create_comment(post_id):
         return json.dumps({'success': False, 'error': 'invalid body format'}), 412
     return json.dumps({'success': False, 'error': 'Post not found!'}), 404
 
+@app.route('/api/post/<int:post_id>/vote/', methods = ['POST'])
+def vote_on_post(post_id):
+    '''
+    file: ./documentation/vote_on_post.yml
+    '''
+
+    post = Post.query.filter_by(id = post_id).first()
+    if post is not None:
+        request_body = json.loads(request.data)
+        # Code here checks for blank body requests / @beforerequests checks for None body requests
+        if not request_body.get('vote') is None:
+            # Add 1 if true / Minus 1 if false
+            post.score += request_body.get('vote') * 2 - 1
+            db.session.commit()
+            return json.dumps({'success': True, 'data': post.serialize()}), 200
+        # Magic Number 1 -> default value when body is null
+        post.score += 1
+        db.session.commit()
+        return json.dumps({'success': True, 'data': post.serialize()}), 200
+    return json.dumps({'success': False, 'error': 'Post not found!'}), 404
+
+@app.route('/api/comment/<int:comment_id>/vote/', methods = ['POST'])
+def vote_on_comment(comment_id):
+    '''
+    file: ./documentation/vote_on_comment.yml
+    '''
+
+    comment = Comment.query.filter_by(id = comment_id).first()
+    if comment is not None:
+        request_body = json.loads(request.data)
+        # Code here checks for blank body requests / @beforerequests checks for None body requests
+        if not request_body.get('vote') is None:
+            # Add 1 if true / Minus 1 if false
+            comment.score += request_body.get('vote') * 2 - 1
+            db.session.commit()
+            return json.dumps({'success': True, 'data': comment.serialize()}), 200
+        # Magic Number 1 -> default value when body is null
+        post.score += 1
+        db.session.commit()
+        return json.dumps({'success': True, 'data': comment.serialize()}), 200
+    return json.dumps({'success': False, 'error': 'Post not found!'}), 404
 # Code that checks for post requests that submit a None body
+
 @app.before_request
 def before_request():
     if request.method == 'POST':
