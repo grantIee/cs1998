@@ -45,6 +45,13 @@ definitions:
                 type: "string"
         xml:
             name: "Comment"
+    Vote:
+        type: "object"
+        properties:
+            vote:
+                type: "boolean"
+        xml:
+            name: "Vote"
 responses:
     201:
         description: "successful creation"
