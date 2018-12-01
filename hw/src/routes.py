@@ -28,6 +28,8 @@ with app.app_context():
 
 swagger = Swagger(app)
 
+PORT = 8000
+
 #### Code Begins Here #### 
 
 @app.route('/api/posts/')
@@ -186,3 +188,5 @@ def before_request():
             return json.dumps({'success': False, 'error': 'invalid body format'}), 412
 
 
+if __name__ == "__main__":
+    app.run(debug=True,port=PORT)
